@@ -11,18 +11,18 @@ import {
   TCP_Action,
   TokenInterface,
   TransportAction,
-} from '../shared/interfaces/shared.interface';
+} from '../../shared/interfaces/shared.interface';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Organizer } from './organizer.entity';
+import { Organizer } from '../entity/organizer.entity';
 import { Repository, UpdateResult } from 'typeorm';
-import { RequestService } from '../shared/services/request.service';
+import { RequestService } from '../../shared/services/request.service';
 import { Cache } from 'cache-manager';
 import { ConfigService } from '@nestjs/config';
-import { DefaultPagination } from '../shared/interfaces/pagination.interface';
+import { DefaultPagination } from '../../shared/interfaces/pagination.interface';
 import { v4 as uuidv4 } from 'uuid';
-import { CreateOrganizerDto, UpdateOrganizerDto } from './organizer.dtos';
-import { CountryService } from '../country/country.service';
-import { UserService } from '../shared/services/user.service';
+import { CreateOrganizerDto, UpdateOrganizerDto } from '../dtos/organizer.dtos';
+import { CountryService } from '../../country/country.service';
+import { UserService } from '../../shared/services/user.service';
 
 @Injectable()
 export class OrganizerService {
@@ -96,6 +96,7 @@ export class OrganizerService {
     if (!owner) throw new BadRequestException('User not found');
     organizer['sub'] = await this.generateOrganizerSub();
     organizer.owner = owner;
+    organizer.country = country;
     return await this.organizerRepository.save(organizer);
   }
 

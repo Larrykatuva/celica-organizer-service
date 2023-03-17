@@ -8,6 +8,9 @@ import { KycMapping } from './entities/kycMapping.entity';
 import { KycContent } from './entities/kycContent.entity';
 import { CqrsModule } from '@nestjs/cqrs';
 import { RolesModule } from '../roles/roles.module';
+import { KycContentController } from './controllers/kycContent.controller';
+import { KycContentService } from './services/kycContent.service';
+import { OrganizerModule } from '../organizer/organizer.module';
 
 @Module({
   imports: [
@@ -15,10 +18,11 @@ import { RolesModule } from '../roles/roles.module';
     CountryModule,
     RolesModule,
     CqrsModule,
+    OrganizerModule,
     TypeOrmModule.forFeature([KycMapping, KycContent]),
   ],
-  providers: [KycMappingService],
-  controllers: [KycMappingController],
+  providers: [KycMappingService, KycContentService],
+  controllers: [KycMappingController, KycContentController],
   exports: [],
 })
 export class KycModule {}

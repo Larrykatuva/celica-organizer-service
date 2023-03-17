@@ -1,6 +1,6 @@
 import { Controller, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { OrganizerService } from '../../organizer/organizer.service';
+import { OrganizerService } from '../../organizer/services/organizer.service';
 import { RpcAuthGuard } from '../guards/transport.guard';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { TransportAction } from '../interfaces/shared.interface';

@@ -2,13 +2,13 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
-  OneToOne,
+  JoinColumn, ManyToOne,
+  OneToMany, OneToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
-import { User } from '../shared/entities/user.entity';
-import { Country } from '../country/country.entity';
+  UpdateDateColumn
+} from "typeorm";
+import { User } from '../../shared/entities/user.entity';
+import { Country } from '../../country/country.entity';
 
 @Entity()
 export class Organizer {
@@ -25,11 +25,9 @@ export class Organizer {
   logo: string;
 
   @OneToOne(() => Country, (country) => country.id)
-  @JoinColumn()
   country: Country;
 
   @OneToOne(() => User, (user) => user.sub)
-  @JoinColumn()
   owner: User;
 
   @CreateDateColumn()

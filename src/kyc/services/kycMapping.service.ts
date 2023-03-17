@@ -23,6 +23,10 @@ export class KycMappingService {
     return JSON.stringify(kycField);
   }
 
+  /**
+   * Set kyc mapping fields and their attributes as a stringed JSON.
+   * @param kycMapping
+   */
   async configureCountryKyc(kycMapping: CreateKycMapping): Promise<KycMapping> {
     if (await this.filterKycMapping({ country: { id: kycMapping.country } }))
       throw new BadRequestException(
@@ -48,6 +52,11 @@ export class KycMappingService {
     });
   }
 
+  /**
+   * Filter Kyc Mapping by filter options and optional extra options specified.
+   * @param filterOptions
+   * @param options
+   */
   async filterKycMapping(
     filterOptions: any,
     options?: any,
@@ -62,6 +71,12 @@ export class KycMappingService {
     }
   }
 
+  /**
+   * Get paginated list of kyc mappings by filter options.
+   * @param pagination
+   * @param filterOptions
+   * @param options
+   */
   async filterKycMappings(
     pagination: DefaultPagination,
     filterOptions?: any,
@@ -78,6 +93,11 @@ export class KycMappingService {
     }
   }
 
+  /**
+   * Update Kyc Mapping configuration.
+   * @param filterOptions
+   * @param updateFields
+   */
   async updateKycMapping(
     filterOptions: any,
     updateFields: UpdateKycMappingDto,

@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserRole } from './role.entity';
+import { ROLE, UserRole } from "./role.entity";
 import { DeleteResult, Repository } from 'typeorm';
 import { CreateRoleDto } from './role.dtos';
 import { UserService } from '../shared/services/user.service';
@@ -31,6 +31,22 @@ export class RoleService {
     role['user'] = await this.userService.filterUser({ sub: role.user });
     role['assignedBy'] = await this.userService.filterUser({ sub: assignedBy });
     return await this.roleRepository.save(role);
+  }
+
+  /**
+   * Check if user is celica staff.
+   * @param sub
+   */
+  async isCelicaStaff(sub: string): Promise<boolean> {
+    const requiredRoles = [ROLE.SUPER_ADMIN, ROLE.SUPPORT, ROLE.BUSINESS]
+    const roles = await this.filterRecords({
+      user: { sub: sub },
+    });
+    const setRoles = [];
+    for (let i = 0; i < roles.length; i++) {
+      setRoles.push(roles[i].role);
+    }
+    return requiredRoles.some((role) => setRoles?.includes(role));
   }
 
   async filterRoles(

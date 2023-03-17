@@ -6,10 +6,12 @@ import { CountryModule } from './country/country.module';
 import { RolesModule } from './roles/roles.module';
 import { OrganizerModule } from './organizer/organizer.module';
 import { KycModule } from './kyc/kyc.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    EventEmitterModule.forRoot(),
     DatabaseConfig,
     SharedModule,
     CountryModule,
@@ -18,11 +20,5 @@ import { KycModule } from './kyc/kyc.module';
     KycModule,
   ],
   controllers: [],
-  providers: [
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: RolesGuard,
-    // },
-  ],
 })
 export class AppModule {}

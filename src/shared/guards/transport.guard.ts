@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
-import { OrganizerService } from '../../organizer/organizer.service';
+import { OrganizerService } from '../../organizer/services/organizer.service';
 
 /**
  * Auth guard to protect rpc transport endpoints by verifying the access token.

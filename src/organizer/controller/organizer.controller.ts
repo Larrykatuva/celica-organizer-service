@@ -8,30 +8,40 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { OrganizerService } from './organizer.service';
+import { OrganizerService } from '../services/organizer.service';
 import {
   SharedPaginatedResponse,
   SharedResponse,
-} from '../shared/decorators/response.decorators';
+} from '../../shared/decorators/response.decorators';
 import {
   CreateOrganizerDto,
   OrganizerResponseDto,
   UpdateOrganizerDto,
-} from './organizer.dtos';
-import { Organizer } from './organizer.entity';
+} from '../dtos/organizer.dtos';
+import { Organizer } from '../entity/organizer.entity';
 import {
   ExtractRequestPagination,
   SharedQueryExtractor,
-} from '../shared/decorators/query.decorators';
-import { DefaultPagination } from '../shared/interfaces/pagination.interface';
-import { RpcAuthGuard } from '../shared/guards/transport.guard';
+} from '../../shared/decorators/query.decorators';
+import { DefaultPagination } from '../../shared/interfaces/pagination.interface';
+import { RpcAuthGuard } from '../../shared/guards/transport.guard';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { TransportAction } from '../shared/interfaces/shared.interface';
+import {
+  TransportAction,
+  UserInfoResponse,
+} from '../../shared/interfaces/shared.interface';
+import { AuthGuard } from '../../shared/guards/auth.guard';
+import { ExtractRequestUser } from '../../shared/decorators/user.decorators';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @ApiTags('ORGANIZER')
+@UseGuards(AuthGuard)
 @Controller('organizer')
 export class OrganizerController {
-  constructor(private organizerService: OrganizerService) {}
+  constructor(
+    private organizerService: OrganizerService,
+    private eventEmitter: EventEmitter2,
+  ) {}
 
   @UseGuards(RpcAuthGuard)
   @MessagePattern('celica_organizer')
@@ -45,8 +55,15 @@ export class OrganizerController {
   @SharedResponse(OrganizerResponseDto)
   async registerOrganizer(
     @Body() organizer: CreateOrganizerDto,
+    @ExtractRequestUser() user: UserInfoResponse,
   ): Promise<Organizer> {
-    return await this.organizerService.createOrganizer(organizer);
+    organizer.owner = user.sub;
+    const org = await this.organizerService.createOrganizer(organizer);
+    this.eventEmitter.emit('affiliate.create', {
+      user: user.sub,
+      organizer: org.id,
+    });
+    return org;
   }
 
   @Get()

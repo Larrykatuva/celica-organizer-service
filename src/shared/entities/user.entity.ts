@@ -2,13 +2,18 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  PrimaryColumn,
+  Index,
+  PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
 @Entity()
 export class User {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @Index()
+  @Column({ unique: true })
   sub: string;
 
   @Column()

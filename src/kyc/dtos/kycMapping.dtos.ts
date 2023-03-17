@@ -18,6 +18,9 @@ export class KycField {
   @ApiProperty({ type: 'enum', enum: KycFieldType })
   @IsNotEmpty()
   type: KycFieldType;
+
+  @ApiProperty({ type: 'boolean', default: false })
+  required: boolean;
 }
 
 export class CreateKycMapping {

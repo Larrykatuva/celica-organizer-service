@@ -3,11 +3,12 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Organizer } from '../../organizer/organizer.entity';
+import { Organizer } from '../../organizer/entity/organizer.entity';
 import { KycMapping } from './kycMapping.entity';
 
 @Entity()
@@ -16,11 +17,9 @@ export class KycContent {
   id: string;
 
   @OneToOne(() => KycMapping, (kycMapping) => kycMapping.id)
-  @JoinColumn()
   kycMapping: string;
 
   @OneToOne(() => Organizer, (organizer) => organizer.id)
-  @JoinColumn()
   organizer: Organizer;
 
   @Column({ nullable: true })

@@ -56,7 +56,11 @@ export class UserService {
   }
 
   async filterUser(filterOptions: any): Promise<User> {
-    return await this.userRepository.findOneBy({ ...filterOptions });
+    try {
+      return await this.userRepository.findOneBy({ ...filterOptions });
+    } catch (error) {
+      return null;
+    }
   }
 
   /**
