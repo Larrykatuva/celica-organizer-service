@@ -7,6 +7,11 @@ import { v4 as uuid } from 'uuid';
 export class FileUploadService {
   constructor(private configService: ConfigService) {}
 
+  /**
+   * Upload file to aws cloud
+   * @param dataBuffer
+   * @param fileName
+   */
   async uploadFile(dataBuffer: Buffer, fileName: string): Promise<any> {
     const s3 = new S3();
     const uploadResult = await s3
