@@ -20,7 +20,7 @@ async function bootstrap() {
     transport: Transport.KAFKA,
     options: {
       client: {
-        clientId: 'celica_organizer_service',
+        clientId: configService.get<string>('KAFKA_CLIENT_ID'),
         brokers: [
           `${configService.get<string>(
             'KAFKA_HOST',
@@ -28,7 +28,7 @@ async function bootstrap() {
         ],
       },
       consumer: {
-        groupId: 'celica_organizer_consumer',
+        groupId: configService.get<string>('KAFKA_GROUP_ID'),
       },
     },
   });
