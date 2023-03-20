@@ -1,7 +1,6 @@
 import {
   BadRequestException,
   CACHE_MANAGER,
-  forwardRef,
   Inject,
   Injectable,
 } from '@nestjs/common';
@@ -23,6 +22,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { CreateOrganizerDto, UpdateOrganizerDto } from '../dtos/organizer.dtos';
 import { CountryService } from '../../country/country.service';
 import { UserService } from '../../shared/services/user.service';
+import { ClientKafka } from '@nestjs/microservices';
 
 @Injectable()
 export class OrganizerService {
@@ -31,6 +31,7 @@ export class OrganizerService {
     private organizerRepository: Repository<Organizer>,
     private requestService: RequestService,
     private countryService: CountryService,
+    @Inject('ORGANIZER_MICROSERVICE') private kafkaClient: ClientKafka,
     private userService: UserService,
     @Inject(CACHE_MANAGER) private cacheService: Cache,
     private configService: ConfigService,
@@ -108,7 +109,14 @@ export class OrganizerService {
       { sub: data.sub },
       { ...data.updateData },
     );
-    return await this.filterOrganizer({ sub: data.sub });
+    const organizer = await this.filterOrganizer({ sub: data.sub });
+    console.log(organizer);
+    const tcpPayload: TransportAction<Organizer> = {
+      action: TCP_Action.CREATE,
+      data: organizer,
+    };
+    this.kafkaClient.emit('celica_organizer', JSON.stringify(tcpPayload));
+    return organizer;
   }
 
   /**

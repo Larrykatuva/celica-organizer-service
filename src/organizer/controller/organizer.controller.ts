@@ -35,7 +35,7 @@ import { ExtractRequestUser } from '../../shared/decorators/user.decorators';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @ApiTags('ORGANIZER')
-@UseGuards(AuthGuard)
+// @UseGuards(AuthGuard)
 @Controller('organizer')
 export class OrganizerController {
   constructor(
@@ -43,13 +43,14 @@ export class OrganizerController {
     private eventEmitter: EventEmitter2,
   ) {}
 
-  @UseGuards(RpcAuthGuard)
-  @MessagePattern('celica_organizer')
-  async handleOrganizerEvent(
-    @Payload() data: TransportAction<any>,
-  ): Promise<void> {
-    await this.organizerService.transportAction(data);
-  }
+  // @UseGuards(RpcAuthGuard)
+  // @MessagePattern('celica_organizer')
+  // async handleOrganizerEvent(
+  //   @Payload() data: TransportAction<any>,
+  // ): Promise<void> {
+  //   console.log('FROM KAFKA => ', data);
+  //   //await this.organizerService.transportAction(data);
+  // }
 
   @Post()
   @SharedResponse(OrganizerResponseDto)

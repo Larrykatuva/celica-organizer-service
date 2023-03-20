@@ -12,6 +12,8 @@ import { AffiliateService } from './services/affiliate.service';
 import { Affiliate } from './entity/affiliate.entity';
 import { AffiliateController } from './controller/affiliate.controller';
 import { RolesModule } from '../roles/roles.module';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -19,6 +21,32 @@ import { RolesModule } from '../roles/roles.module';
     CacheModule.registerAsync({
       useClass: CacheConfigService,
     }),
+    ClientsModule.registerAsync([
+      {
+        name: 'ORGANIZER_MICROSERVICE',
+        imports: [ConfigModule],
+        inject: [ConfigService],
+        useFactory: async (configService: ConfigService) => {
+          return {
+            name: configService.get<string>('KAFKA_NAME'),
+            transport: Transport.KAFKA,
+            options: {
+              client: {
+                clientId: configService.get<string>('KAFKA_CLIENT_ID'),
+                brokers: [
+                  `${configService.get<string>(
+                    'KAFKA_HOST',
+                  )}:${configService.get<string>('KAFKA_PORT')}`,
+                ],
+              },
+              consumer: {
+                groupId: configService.get<string>('KAFKA_GROUP_ID'),
+              },
+            },
+          };
+        },
+      },
+    ]),
     HttpModule,
     SharedModule,
     CountryModule,
