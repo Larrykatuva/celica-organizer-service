@@ -3,7 +3,7 @@ import { IsNotEmpty } from 'class-validator';
 import { ROLE } from './role.entity';
 
 export class CreateRoleDto {
-  @ApiProperty({ type: 'enum', default: ROLE.CLIENT_USER })
+  @ApiProperty({ type: 'enum', default: ROLE.ORGANIZER_USER })
   @IsNotEmpty()
   role: ROLE;
 
@@ -28,6 +28,6 @@ export class RoleResponseDto extends CreateRoleDto {
 }
 
 export class UpdateRoleDto {
-  @ApiProperty({ type: 'enum', default: ROLE.CLIENT_USER })
+  @ApiProperty({ type: 'enum', default: ROLE.ORGANIZER_USER })
   role: ROLE;
 }

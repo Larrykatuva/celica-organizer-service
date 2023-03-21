@@ -13,8 +13,8 @@ export enum ROLE {
   SUPER_ADMIN = 'SUPER_ADMIN',
   SUPPORT = 'SUPPORT',
   BUSINESS = 'BUSINESS',
-  CLIENT_ADMIN = 'CLIENT_ADMIN',
-  CLIENT_USER = 'CLIENT_USER',
+  ORGANIZER_ADMIN = 'ORGANIZER_ADMIN',
+  ORGANIZER_USER = 'ORGANIZER_USER',
 }
 
 @Entity()
@@ -25,7 +25,7 @@ export class UserRole {
   @Column({
     type: 'enum',
     enum: ROLE,
-    default: ROLE.CLIENT_USER,
+    default: ROLE.ORGANIZER_USER,
   })
   role: ROLE;
 

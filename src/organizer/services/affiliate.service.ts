@@ -7,6 +7,8 @@ import { OrganizerService } from './organizer.service';
 import { DefaultPagination } from '../../shared/interfaces/pagination.interface';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OnEvent } from '@nestjs/event-emitter';
+import { RoleService } from '../../roles/role.service';
+import { ROLE } from '../../roles/role.entity';
 
 @Injectable()
 export class AffiliateService {
@@ -15,6 +17,7 @@ export class AffiliateService {
     private affiliateRepository: Repository<Affiliate>,
     private userService: UserService,
     private organizerService: OrganizerService,
+    private roleService: RoleService,
   ) {}
 
   async filterAffiliateUser(filterOptions: any): Promise<Affiliate> {
@@ -51,7 +54,7 @@ export class AffiliateService {
   }
 
   /**
-   * Add organizer using events.
+   * Create an organizer affiliate and add ORGANIZER_ADMIN role to the user.
    * @param payload
    */
   @OnEvent('affiliate.create')
@@ -60,6 +63,10 @@ export class AffiliateService {
     organizer: string;
   }) {
     await this.addAffiliateUser(payload);
+    await this.roleService.assignRole(
+      { role: ROLE.ORGANIZER_ADMIN, user: payload.user },
+      payload.user,
+    );
   }
 
   /**

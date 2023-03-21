@@ -39,7 +39,7 @@ export class KycContentController {
   ) {}
 
   @Post()
-  @Roles(ROLE.SUPER_ADMIN, ROLE.BUSINESS, ROLE.CLIENT_ADMIN, ROLE.SUPPORT)
+  @Roles(ROLE.SUPER_ADMIN, ROLE.BUSINESS, ROLE.ORGANIZER_ADMIN, ROLE.SUPPORT)
   @UseGuards(RolesGuard)
   @UseInterceptors(AnyFilesInterceptor())
   async setKycContent(
@@ -67,7 +67,7 @@ export class KycContentController {
   }
 
   @Get()
-  @Roles(ROLE.SUPER_ADMIN, ROLE.BUSINESS, ROLE.CLIENT_ADMIN, ROLE.SUPPORT)
+  @Roles(ROLE.SUPER_ADMIN, ROLE.BUSINESS, ROLE.ORGANIZER_ADMIN, ROLE.SUPPORT)
   async getKycContent(
     @ExtractRequestPagination() pagination: DefaultPagination,
     @ExtractRequestUser() user: UserInfoResponse,
