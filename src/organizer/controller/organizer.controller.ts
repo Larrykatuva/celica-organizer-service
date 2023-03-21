@@ -1,5 +1,6 @@
 import { ApiTags } from '@nestjs/swagger';
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -24,33 +25,26 @@ import {
   SharedQueryExtractor,
 } from '../../shared/decorators/query.decorators';
 import { DefaultPagination } from '../../shared/interfaces/pagination.interface';
-import { RpcAuthGuard } from '../../shared/guards/transport.guard';
-import { MessagePattern, Payload } from '@nestjs/microservices';
-import {
-  TransportAction,
-  UserInfoResponse,
-} from '../../shared/interfaces/shared.interface';
+import { UserInfoResponse } from '../../shared/interfaces/shared.interface';
 import { AuthGuard } from '../../shared/guards/auth.guard';
 import { ExtractRequestUser } from '../../shared/decorators/user.decorators';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { ROLE } from '../../roles/role.entity';
+import { Roles } from '../../shared/decorators/roles.decorators';
+import { RolesGuard } from '../../shared/guards/roles.guard';
+import { RoleService } from '../../roles/role.service';
+import { AffiliateService } from '../services/affiliate.service';
 
 @ApiTags('ORGANIZER')
-// @UseGuards(AuthGuard)
+@UseGuards(AuthGuard)
 @Controller('organizer')
 export class OrganizerController {
   constructor(
     private organizerService: OrganizerService,
     private eventEmitter: EventEmitter2,
+    private roleService: RoleService,
+    private affiliateService: AffiliateService,
   ) {}
-
-  // @UseGuards(RpcAuthGuard)
-  // @MessagePattern('celica_organizer')
-  // async handleOrganizerEvent(
-  //   @Payload() data: TransportAction<any>,
-  // ): Promise<void> {
-  //   console.log('FROM KAFKA => ', data);
-  //   //await this.organizerService.transportAction(data);
-  // }
 
   @Post()
   @SharedResponse(OrganizerResponseDto)
@@ -68,6 +62,8 @@ export class OrganizerController {
   }
 
   @Get()
+  @Roles(ROLE.BUSINESS, ROLE.SUPPORT, ROLE.SUPER_ADMIN)
+  @UseGuards(RolesGuard)
   @SharedPaginatedResponse(OrganizerResponseDto)
   async listOrganizers(
     @ExtractRequestPagination() pagination: DefaultPagination,
@@ -83,11 +79,22 @@ export class OrganizerController {
   }
 
   @Patch(':sub')
+  @Roles(ROLE.BUSINESS, ROLE.SUPPORT, ROLE.SUPER_ADMIN, ROLE.ORGANIZER_ADMIN)
+  @UseGuards(RolesGuard)
   @SharedResponse(OrganizerResponseDto)
   async updateOrganizer(
     @Param('sub') sub: string,
     @Body() data: UpdateOrganizerDto,
+    @ExtractRequestUser() user: UserInfoResponse,
   ): Promise<Organizer> {
+    if (!(await this.roleService.isCelicaStaff(user.sub))) {
+      const affiliate = await this.affiliateService.filterAffiliateUser({
+        user: { sub: user.sub },
+      });
+      if (!affiliate) throw new BadRequestException('Organizer not found');
+      if (affiliate.organizer.sub != sub)
+        throw new BadRequestException('Organizer not found');
+    }
     return await this.organizerService.updateOrganizer({
       sub: sub,
       updateData: data,

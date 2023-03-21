@@ -43,7 +43,7 @@ export class AffiliateController {
 
   @Post()
   @SharedResponse(AffiliateResponseDto)
-  @Roles(ROLE.SUPER_ADMIN, ROLE.SUPPORT, ROLE.CLIENT_ADMIN, ROLE.BUSINESS)
+  @Roles(ROLE.SUPER_ADMIN, ROLE.SUPPORT, ROLE.ORGANIZER_ADMIN, ROLE.BUSINESS)
   @UseGuards(RolesGuard)
   async addOrganizerAffiliate(
     @Body() affiliate: CreateAffiliateDto,
@@ -61,7 +61,7 @@ export class AffiliateController {
 
   @Get()
   @SharedPaginatedResponse(AffiliateResponseDto)
-  @Roles(ROLE.SUPER_ADMIN, ROLE.SUPPORT, ROLE.CLIENT_ADMIN, ROLE.BUSINESS)
+  @Roles(ROLE.SUPER_ADMIN, ROLE.SUPPORT, ROLE.ORGANIZER_ADMIN, ROLE.BUSINESS)
   @UseGuards(RolesGuard)
   async listOrganizerAffiliates(
     @ExtractRequestUser() user: UserInfoResponse,
@@ -84,7 +84,7 @@ export class AffiliateController {
 
   @Get(':id')
   @SharedResponse(AffiliateResponseDto)
-  @Roles(ROLE.SUPER_ADMIN, ROLE.SUPPORT, ROLE.CLIENT_ADMIN, ROLE.BUSINESS)
+  @Roles(ROLE.SUPER_ADMIN, ROLE.SUPPORT, ROLE.ORGANIZER_ADMIN, ROLE.BUSINESS)
   @UseGuards(RolesGuard)
   async getOrganizerAffiliate(
     @Param('id') id: string,
@@ -106,7 +106,7 @@ export class AffiliateController {
 
   @Patch(':id')
   @SharedResponse(AffiliateResponseDto)
-  @Roles(ROLE.SUPER_ADMIN, ROLE.SUPPORT, ROLE.CLIENT_ADMIN, ROLE.BUSINESS)
+  @Roles(ROLE.SUPER_ADMIN, ROLE.SUPPORT, ROLE.ORGANIZER_ADMIN, ROLE.BUSINESS)
   @UseGuards(RolesGuard)
   async updateOrganizerAffiliate(
     @ExtractRequestUser() user: UserInfoResponse,
