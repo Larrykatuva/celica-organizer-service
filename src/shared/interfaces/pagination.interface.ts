@@ -3,5 +3,5 @@
  */
 export interface DefaultPagination {
   skip: number;
-  limit: number;
+  take: number;
 }

@@ -67,7 +67,7 @@ export class KycMappingService {
         ...options,
       });
     } catch (error) {
-      return null;
+      throw new BadRequestException(error.message);
     }
   }
 
@@ -89,7 +89,7 @@ export class KycMappingService {
         ...options,
       });
     } catch (error) {
-      return [[], 0];
+      throw new BadRequestException(error.message);
     }
   }
 

@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ROLE, UserRole } from "./role.entity";
+import { ROLE, UserRole } from './role.entity';
 import { DeleteResult, Repository } from 'typeorm';
 import { CreateRoleDto } from './role.dtos';
 import { UserService } from '../shared/services/user.service';
@@ -17,7 +17,7 @@ export class RoleService {
     try {
       return await this.roleRepository.findOneBy({ ...filterOptions });
     } catch (error) {
-      return null;
+      throw new BadRequestException(error.message);
     }
   }
 
@@ -38,7 +38,7 @@ export class RoleService {
    * @param sub
    */
   async isCelicaStaff(sub: string): Promise<boolean> {
-    const requiredRoles = [ROLE.SUPER_ADMIN, ROLE.SUPPORT, ROLE.BUSINESS]
+    const requiredRoles = [ROLE.SUPER_ADMIN, ROLE.SUPPORT, ROLE.BUSINESS];
     const roles = await this.filterRecords({
       user: { sub: sub },
     });
@@ -61,7 +61,7 @@ export class RoleService {
         ...options,
       });
     } catch (error) {
-      return [[], 0];
+      throw new BadRequestException(error.message);
     }
   }
 

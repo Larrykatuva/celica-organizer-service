@@ -17,6 +17,15 @@ export enum ROLE {
   ORGANIZER_USER = 'ORGANIZER_USER',
 }
 
+export const STAFF_ROLES: ROLE[] = [
+  ROLE.SUPER_ADMIN,
+  ROLE.SUPPORT,
+  ROLE.SUPPORT,
+  ROLE.BUSINESS,
+];
+
+export const ORGANIZER_ROLES: ROLE[] = [ROLE.ORGANIZER_ADMIN];
+
 @Entity()
 export class UserRole {
   @PrimaryGeneratedColumn('uuid')
