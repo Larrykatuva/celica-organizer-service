@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { CountryService } from './country.service';
 import {
-  SharedPaginatedResponse,
+  RequestPaginationDecorator,
   SharedResponse,
 } from '../shared/decorators/response.decorators';
 import {
@@ -24,10 +24,9 @@ import {
 } from '../shared/decorators/query.decorators';
 import { DefaultPagination } from '../shared/interfaces/pagination.interface';
 import { Country } from './country.entity';
-import { Roles } from '../shared/decorators/roles.decorators';
-import { ROLE } from '../roles/role.entity';
+import { AuthRoles } from '../shared/decorators/roles.decorators';
+import { ROLE, STAFF_ROLES } from '../roles/role.entity';
 import { AuthGuard } from '../shared/guards/auth.guard';
-import { RolesGuard } from '../shared/guards/roles.guard';
 
 @ApiTags('COUNTRY')
 @UseGuards(AuthGuard)
@@ -37,15 +36,13 @@ export class CountryController {
 
   @Post()
   @SharedResponse(CountryResponseDto)
-  @Roles(ROLE.SUPER_ADMIN)
-  @UseGuards(RolesGuard)
+  @AuthRoles(ROLE.SUPER_ADMIN)
   async createCountry(@Body() country: CreateCountryDto): Promise<Country> {
     return await this.countryService.createCountry(country);
   }
 
-  @Get()@Roles(ROLE.SUPER_ADMIN)
-  @UseGuards(RolesGuard)
-  @SharedPaginatedResponse(CountryResponseDto)
+  @Get()
+  @RequestPaginationDecorator(CountryResponseDto)
   async listCountries(
     @SharedQueryExtractor() query: any,
     @ExtractRequestPagination() pagination: DefaultPagination,
@@ -60,6 +57,7 @@ export class CountryController {
   }
 
   @Patch(':id')
+  @AuthRoles(...STAFF_ROLES)
   @SharedResponse(CountryResponseDto, 200)
   async updateCountry(
     @Param('id') id: string,

@@ -24,7 +24,7 @@ export class AffiliateService {
     try {
       return await this.affiliateRepository.findOneBy({ ...filterOptions });
     } catch (error) {
-      return null;
+      throw new BadRequestException(error.message);
     }
   }
 
@@ -87,7 +87,7 @@ export class AffiliateService {
         ...options,
       });
     } catch (error) {
-      return [[], 0];
+      throw new BadRequestException(error.message);
     }
   }
 

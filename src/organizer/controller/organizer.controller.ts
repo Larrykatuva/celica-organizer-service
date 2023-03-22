@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { OrganizerService } from '../services/organizer.service';
 import {
-  SharedPaginatedResponse,
+  RequestPaginationDecorator,
   SharedResponse,
 } from '../../shared/decorators/response.decorators';
 import {
@@ -29,9 +29,8 @@ import { UserInfoResponse } from '../../shared/interfaces/shared.interface';
 import { AuthGuard } from '../../shared/guards/auth.guard';
 import { ExtractRequestUser } from '../../shared/decorators/user.decorators';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { ROLE } from '../../roles/role.entity';
-import { Roles } from '../../shared/decorators/roles.decorators';
-import { RolesGuard } from '../../shared/guards/roles.guard';
+import { ORGANIZER_ROLES, STAFF_ROLES } from '../../roles/role.entity';
+import { AuthRoles } from '../../shared/decorators/roles.decorators';
 import { RoleService } from '../../roles/role.service';
 import { AffiliateService } from '../services/affiliate.service';
 
@@ -62,9 +61,8 @@ export class OrganizerController {
   }
 
   @Get()
-  @Roles(ROLE.BUSINESS, ROLE.SUPPORT, ROLE.SUPER_ADMIN)
-  @UseGuards(RolesGuard)
-  @SharedPaginatedResponse(OrganizerResponseDto)
+  @AuthRoles(...STAFF_ROLES)
+  @RequestPaginationDecorator(OrganizerResponseDto)
   async listOrganizers(
     @ExtractRequestPagination() pagination: DefaultPagination,
     @SharedQueryExtractor() query: any,
@@ -79,8 +77,7 @@ export class OrganizerController {
   }
 
   @Patch(':sub')
-  @Roles(ROLE.BUSINESS, ROLE.SUPPORT, ROLE.SUPER_ADMIN, ROLE.ORGANIZER_ADMIN)
-  @UseGuards(RolesGuard)
+  @AuthRoles(...STAFF_ROLES, ...ORGANIZER_ROLES)
   @SharedResponse(OrganizerResponseDto)
   async updateOrganizer(
     @Param('sub') sub: string,

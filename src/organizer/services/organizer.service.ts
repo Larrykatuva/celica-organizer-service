@@ -61,7 +61,7 @@ export class OrganizerService {
     try {
       return await this.organizerRepository.findOneBy({ ...filterOptions });
     } catch (error) {
-      return null;
+      throw new BadRequestException(error.message);
     }
   }
 
@@ -77,7 +77,7 @@ export class OrganizerService {
         ...options,
       });
     } catch (error) {
-      return [[], 0];
+      throw new BadRequestException(error.message);
     }
   }
 

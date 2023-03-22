@@ -16,14 +16,13 @@ import {
   SetAffiliateStatusDto,
 } from '../dtos/affiliate.dtos';
 import { Affiliate } from '../entity/affiliate.entity';
-import { Roles } from '../../shared/decorators/roles.decorators';
-import { ROLE } from '../../roles/role.entity';
-import { RolesGuard } from '../../shared/guards/roles.guard';
+import { AuthRoles } from '../../shared/decorators/roles.decorators';
+import { ORGANIZER_ROLES, STAFF_ROLES } from '../../roles/role.entity';
 import { RoleService } from '../../roles/role.service';
 import { ExtractRequestUser } from '../../shared/decorators/user.decorators';
 import { UserInfoResponse } from '../../shared/interfaces/shared.interface';
 import {
-  SharedPaginatedResponse,
+  RequestPaginationDecorator,
   SharedResponse,
 } from '../../shared/decorators/response.decorators';
 import {
@@ -43,8 +42,7 @@ export class AffiliateController {
 
   @Post()
   @SharedResponse(AffiliateResponseDto)
-  @Roles(ROLE.SUPER_ADMIN, ROLE.SUPPORT, ROLE.ORGANIZER_ADMIN, ROLE.BUSINESS)
-  @UseGuards(RolesGuard)
+  @AuthRoles(...STAFF_ROLES, ...ORGANIZER_ROLES)
   async addOrganizerAffiliate(
     @Body() affiliate: CreateAffiliateDto,
     @ExtractRequestUser() user: UserInfoResponse,
@@ -60,9 +58,8 @@ export class AffiliateController {
   }
 
   @Get()
-  @SharedPaginatedResponse(AffiliateResponseDto)
-  @Roles(ROLE.SUPER_ADMIN, ROLE.SUPPORT, ROLE.ORGANIZER_ADMIN, ROLE.BUSINESS)
-  @UseGuards(RolesGuard)
+  @RequestPaginationDecorator(AffiliateResponseDto)
+  @AuthRoles(...STAFF_ROLES, ...ORGANIZER_ROLES)
   async listOrganizerAffiliates(
     @ExtractRequestUser() user: UserInfoResponse,
     @ExtractRequestPagination() pagination: DefaultPagination,
@@ -84,8 +81,7 @@ export class AffiliateController {
 
   @Get(':id')
   @SharedResponse(AffiliateResponseDto)
-  @Roles(ROLE.SUPER_ADMIN, ROLE.SUPPORT, ROLE.ORGANIZER_ADMIN, ROLE.BUSINESS)
-  @UseGuards(RolesGuard)
+  @AuthRoles(...STAFF_ROLES, ...ORGANIZER_ROLES)
   async getOrganizerAffiliate(
     @Param('id') id: string,
     @ExtractRequestUser() user: UserInfoResponse,
@@ -106,8 +102,7 @@ export class AffiliateController {
 
   @Patch(':id')
   @SharedResponse(AffiliateResponseDto)
-  @Roles(ROLE.SUPER_ADMIN, ROLE.SUPPORT, ROLE.ORGANIZER_ADMIN, ROLE.BUSINESS)
-  @UseGuards(RolesGuard)
+  @AuthRoles(...STAFF_ROLES, ...ORGANIZER_ROLES)
   async updateOrganizerAffiliate(
     @ExtractRequestUser() user: UserInfoResponse,
     @Param('id') id: string,

@@ -27,8 +27,10 @@ const prepareQueryObject = (query: any[], queryObject: any) => {
 export const SharedQueryExtractor = createParamDecorator(
   (data: unknown, context: ExecutionContext) => {
     const request = context.switchToHttp().getRequest<Request>();
-    const queryArray = Object.entries(request.query);
+    let queryArray = Object.entries(request.query);
     const queryObject = {};
+    const forDeletion = ['PageIndex', 'PageSize'];
+    queryArray = queryArray.filter((item) => !forDeletion.includes(item[0]));
     for (let i = 0; i < queryArray.length; i++) {
       if (queryArray[i][0] != 'related_tables') {
         prepareQueryObject(queryArray[i], queryObject);
@@ -47,8 +49,9 @@ export const ExtractRequestPagination = createParamDecorator(
     const {
       query: { PageIndex = 0, PageSize = 10 },
     } = request;
-    return `offset=${PageIndex.toString()}&limit=${
-      PageSize > 50 ? '10' : PageSize.toString()
-    }`;
+    return {
+      skip: parseInt(PageIndex.toString()),
+      take: PageSize > 50 ? 10 : parseInt(PageSize.toString()),
+    };
   },
 );

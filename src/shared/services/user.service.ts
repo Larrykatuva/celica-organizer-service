@@ -1,4 +1,4 @@
-import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, CACHE_MANAGER, Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../entities/user.entity';
 import {
@@ -59,7 +59,7 @@ export class UserService {
     try {
       return await this.userRepository.findOneBy({ ...filterOptions });
     } catch (error) {
-      return null;
+      throw new BadRequestException(error.message);
     }
   }
 

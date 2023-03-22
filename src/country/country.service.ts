@@ -15,7 +15,7 @@ export class CountryService {
     try {
       return await this.countryRepository.findOneBy({ ...filterOptions });
     } catch (error) {
-      return null;
+      throw new BadRequestException(error.message);
     }
   }
 
@@ -32,11 +32,15 @@ export class CountryService {
     queryOptions?: any,
     options?: any,
   ): Promise<[Country[], number]> {
-    return await this.countryRepository.findAndCount({
-      ...pagination,
-      where: { ...queryOptions },
-      ...options,
-    });
+    try {
+      return await this.countryRepository.findAndCount({
+        ...pagination,
+        where: { ...queryOptions },
+        ...options,
+      });
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   async updateCountry(

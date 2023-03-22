@@ -16,7 +16,7 @@ import {
 } from '../dtos/kycMapping.dtos';
 import { KycMapping } from '../entities/kycMapping.entity';
 import {
-  SharedPaginatedResponse,
+  RequestPaginationDecorator,
   SharedResponse,
 } from '../../shared/decorators/response.decorators';
 import {
@@ -24,9 +24,8 @@ import {
   SharedQueryExtractor,
 } from '../../shared/decorators/query.decorators';
 import { DefaultPagination } from '../../shared/interfaces/pagination.interface';
-import { Roles } from '../../shared/decorators/roles.decorators';
+import { AuthRoles } from '../../shared/decorators/roles.decorators';
 import { ROLE } from '../../roles/role.entity';
-import { RolesGuard } from '../../shared/guards/roles.guard';
 import { AuthGuard } from '../../shared/guards/auth.guard';
 
 @ApiTags('KYC')
@@ -36,15 +35,14 @@ export class KycMappingController {
   constructor(private kycMappingService: KycMappingService) {}
 
   @Post()
-  @Roles(ROLE.SUPER_ADMIN)
-  @UseGuards(RolesGuard)
+  @AuthRoles(ROLE.SUPER_ADMIN)
   @SharedResponse(KycMappingResponseDto)
   async configure(@Body() kycMapping: CreateKycMapping): Promise<KycMapping> {
     return await this.kycMappingService.configureCountryKyc(kycMapping);
   }
 
   @Get()
-  @SharedPaginatedResponse(KycMappingResponseDto)
+  @RequestPaginationDecorator(KycMappingResponseDto)
   async listKycMappings(
     @ExtractRequestPagination() pagination: DefaultPagination,
     @SharedQueryExtractor() query: any,
@@ -66,8 +64,7 @@ export class KycMappingController {
   }
 
   @Patch(':id')
-  @Roles(ROLE.SUPER_ADMIN)
-  @UseGuards(RolesGuard)
+  @AuthRoles(ROLE.SUPER_ADMIN)
   @SharedResponse(KycMappingResponseDto, 200)
   async updateKycMapping(
     @Param('id') id: string,

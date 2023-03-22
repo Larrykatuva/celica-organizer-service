@@ -14,18 +14,14 @@ import { KycContentService } from '../services/kycContent.service';
 import { KycMappingService } from '../services/kycMapping.service';
 import { OrganizerService } from '../../organizer/services/organizer.service';
 import { AuthGuard } from '../../shared/guards/auth.guard';
-import { RolesGuard } from '../../shared/guards/roles.guard';
-import { Roles } from '../../shared/decorators/roles.decorators';
-import { ROLE } from '../../roles/role.entity';
+import { AuthRoles } from '../../shared/decorators/roles.decorators';
+import { ORGANIZER_ROLES, STAFF_ROLES } from '../../roles/role.entity';
 import { ExtractRequestPagination } from '../../shared/decorators/query.decorators';
 import { DefaultPagination } from '../../shared/interfaces/pagination.interface';
 import { KycContent } from '../entities/kycContent.entity';
 import { RoleService } from '../../roles/role.service';
 import { ExtractRequestUser } from '../../shared/decorators/user.decorators';
-import {
-  TokenInterface,
-  UserInfoResponse,
-} from '../../shared/interfaces/shared.interface';
+import { UserInfoResponse } from '../../shared/interfaces/shared.interface';
 
 @ApiTags('KYC')
 @UseGuards(AuthGuard)
@@ -39,8 +35,7 @@ export class KycContentController {
   ) {}
 
   @Post()
-  @Roles(ROLE.SUPER_ADMIN, ROLE.BUSINESS, ROLE.ORGANIZER_ADMIN, ROLE.SUPPORT)
-  @UseGuards(RolesGuard)
+  @AuthRoles(...STAFF_ROLES, ...ORGANIZER_ROLES)
   @UseInterceptors(AnyFilesInterceptor())
   async setKycContent(
     @Body() content: any,
@@ -67,7 +62,7 @@ export class KycContentController {
   }
 
   @Get()
-  @Roles(ROLE.SUPER_ADMIN, ROLE.BUSINESS, ROLE.ORGANIZER_ADMIN, ROLE.SUPPORT)
+  @AuthRoles(...STAFF_ROLES, ...ORGANIZER_ROLES)
   async getKycContent(
     @ExtractRequestPagination() pagination: DefaultPagination,
     @ExtractRequestUser() user: UserInfoResponse,
