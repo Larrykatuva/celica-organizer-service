@@ -157,7 +157,6 @@ export class KycContentService {
     kycMapping: KycMapping,
     organizer: Organizer,
   ): Promise<KycContent> {
-    console.log(organizer);
     if (await this.filterKycContent({ organizer: { id: organizer.id } }))
       throw new BadRequestException('Organizer kyc already processed');
     const kycInstanceArr = [];

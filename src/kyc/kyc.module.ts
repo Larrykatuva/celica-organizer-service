@@ -11,9 +11,15 @@ import { RolesModule } from '../roles/roles.module';
 import { KycContentController } from './controllers/kycContent.controller';
 import { KycContentService } from './services/kycContent.service';
 import { OrganizerModule } from '../organizer/organizer.module';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
+    MulterModule.registerAsync({
+      useFactory: () => ({
+        dest: './upload',
+      }),
+    }),
     SharedModule,
     CountryModule,
     RolesModule,
