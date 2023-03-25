@@ -55,6 +55,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
   ],
   providers: [OrganizerService, AffiliateService],
   controllers: [OrganizerController, AffiliateController],
-  exports: [OrganizerService],
+  exports: [OrganizerService, AffiliateService],
 })
 export class OrganizerModule {}

@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { ROLE } from '../../roles/role.entity';
+import { ROLE, UserRole } from '../../roles/role.entity';
 import { ROLES_KEY } from '../decorators/roles.decorators';
 import { Request } from 'express';
 import { RoleService } from '../../roles/role.service';
@@ -30,10 +30,7 @@ export class RolesGuard implements CanActivate {
     const roles = await this.rolesService.filterRecords({
       user: { sub: user.sub },
     });
-    const setRoles = [];
-    for (let i = 0; i < roles.length; i++) {
-      setRoles.push(roles[i].role);
-    }
+    const setRoles = roles.map((role) => role.role);
     return requiredRoles.some((role) => setRoles?.includes(role));
   }
 }

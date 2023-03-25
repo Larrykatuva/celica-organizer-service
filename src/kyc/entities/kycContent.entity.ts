@@ -16,10 +16,12 @@ export class KycContent {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @OneToOne(() => KycMapping, (kycMapping) => kycMapping.id)
+  @ManyToOne(() => KycMapping, (kycMapping) => kycMapping.id)
+  @JoinColumn()
   kycMapping: string;
 
-  @OneToOne(() => Organizer, (organizer) => organizer.id)
+  @ManyToOne(() => Organizer, (organizer) => organizer.id)
+  @JoinColumn()
   organizer: Organizer;
 
   @Column({ nullable: true })

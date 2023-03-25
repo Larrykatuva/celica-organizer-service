@@ -7,12 +7,17 @@ import { RolesModule } from './roles/roles.module';
 import { OrganizerModule } from './organizer/organizer.module';
 import { KycModule } from './kyc/kyc.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import { ClientsModule, Transport } from '@nestjs/microservices';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     EventEmitterModule.forRoot(),
+    MulterModule.registerAsync({
+      useFactory: () => ({
+        dest: './upload',
+      }),
+    }),
     DatabaseConfig,
     SharedModule,
     CountryModule,

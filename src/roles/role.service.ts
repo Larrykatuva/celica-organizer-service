@@ -42,10 +42,7 @@ export class RoleService {
     const roles = await this.filterRecords({
       user: { sub: sub },
     });
-    const setRoles = [];
-    for (let i = 0; i < roles.length; i++) {
-      setRoles.push(roles[i].role);
-    }
+    const setRoles = roles.map((role) => role.role);
     return requiredRoles.some((role) => setRoles?.includes(role));
   }
 

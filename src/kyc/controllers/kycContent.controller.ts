@@ -3,6 +3,7 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Post,
   UploadedFiles,
   UseGuards,
@@ -16,12 +17,18 @@ import { OrganizerService } from '../../organizer/services/organizer.service';
 import { AuthGuard } from '../../shared/guards/auth.guard';
 import { AuthRoles } from '../../shared/decorators/roles.decorators';
 import { ORGANIZER_ROLES, STAFF_ROLES } from '../../roles/role.entity';
-import { ExtractRequestPagination } from '../../shared/decorators/query.decorators';
+import {
+  ExtractRequestPagination,
+  SharedQueryExtractor,
+} from '../../shared/decorators/query.decorators';
 import { DefaultPagination } from '../../shared/interfaces/pagination.interface';
 import { KycContent } from '../entities/kycContent.entity';
 import { RoleService } from '../../roles/role.service';
 import { ExtractRequestUser } from '../../shared/decorators/user.decorators';
 import { UserInfoResponse } from '../../shared/interfaces/shared.interface';
+import { RequestPaginationDecorator } from '../../shared/decorators/response.decorators';
+import { KycResponseDto } from '../dtos/kycContent.dtos';
+import { AffiliateService } from '../../organizer/services/affiliate.service';
 
 @ApiTags('KYC')
 @UseGuards(AuthGuard)
@@ -32,6 +39,7 @@ export class KycContentController {
     private kycMappingService: KycMappingService,
     private organizerService: OrganizerService,
     private roleService: RoleService,
+    private affiliateService: AffiliateService,
   ) {}
 
   @Post()
@@ -63,15 +71,38 @@ export class KycContentController {
 
   @Get()
   @AuthRoles(...STAFF_ROLES, ...ORGANIZER_ROLES)
-  async getKycContent(
+  @RequestPaginationDecorator(KycResponseDto)
+  async getKycContents(
     @ExtractRequestPagination() pagination: DefaultPagination,
     @ExtractRequestUser() user: UserInfoResponse,
+    @SharedQueryExtractor() query: any,
   ): Promise<[KycContent[], number]> {
-    const filterOptions = {};
-    console.log(user);
     if (!(await this.roleService.isCelicaStaff(user.sub))) {
-      const organizer = await this.organizerService.filterOrganizer({});
+      const affiliate = await this.affiliateService.isAffiliate({
+        user: { sub: user.sub },
+      });
+      query = { organizer: { id: affiliate.organizer.id }, ...query };
     }
-    return await this.kycContentService.filterKycContents(pagination);
+    return await this.kycContentService.filterKycContents(pagination, query, {
+      relations: ['organizer', 'kycMapping'],
+    });
+  }
+
+  @Get(':id')
+  @AuthRoles(...STAFF_ROLES, ...ORGANIZER_ROLES)
+  async getKycContent(
+    @Param('id') id: string,
+    @ExtractRequestUser() user: UserInfoResponse,
+  ): Promise<KycContent> {
+    const query = { id: id };
+    if (!(await this.roleService.isCelicaStaff(user.sub))) {
+      const affiliate = await this.affiliateService.isAffiliate({
+        user: { sub: user.sub },
+      });
+      query['organizer'] = { id: affiliate.organizer.id };
+    }
+    return this.kycContentService.filterKycContent(query, {
+      relations: ['organizer', 'kycMapping'],
+    });
   }
 }

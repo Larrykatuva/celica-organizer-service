@@ -42,3 +42,14 @@ export class CreateKycContent {
   @ApiProperty()
   field10: KycField;
 }
+
+export class KycResponseDto extends CreateKycContent {
+  @ApiProperty()
+  id: string;
+
+  @ApiProperty()
+  createdAt: string;
+
+  @ApiProperty()
+  updatedAt: string;
+}

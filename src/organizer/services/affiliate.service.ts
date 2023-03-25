@@ -29,6 +29,19 @@ export class AffiliateService {
   }
 
   /**
+   * Check if user is an affiliate to any organizer.
+   * @param filterOptions
+   */
+  async isAffiliate(filterOptions: any): Promise<Affiliate> {
+    const affiliate = await this.filterAffiliateUser(filterOptions);
+    if (!affiliate)
+      throw new BadRequestException(
+        'You are not an affiliate to any organizer.',
+      );
+    return affiliate;
+  }
+
+  /**
    * Add new organizer affiliate.
    * @param affiliate
    */
