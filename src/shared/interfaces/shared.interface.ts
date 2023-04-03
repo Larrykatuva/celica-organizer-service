@@ -1,3 +1,5 @@
+import { USER } from '../dto/auth.dto';
+
 export enum TCP_Action {
   UPDATE = 'UPDATE',
   CREATE = 'CREATE',
@@ -34,6 +36,7 @@ export interface TokenVerifyResponse {
   active: boolean;
   iat: number;
   exp: number;
+  type: USER;
 }
 
 export interface UserInfoResponse {

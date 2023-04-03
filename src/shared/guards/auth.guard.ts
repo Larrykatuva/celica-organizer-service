@@ -8,6 +8,7 @@ import { Request } from 'express';
 import { UserService } from '../services/user.service';
 import { CommandBus } from '@nestjs/cqrs';
 import { UserCommand } from '../commands/impl/user.command';
+import { USER } from '../dto/auth.dto';
 
 /**
  * Authentication guard to authenticate request token.
@@ -31,6 +32,7 @@ export class AuthGuard implements CanActivate {
     if (!token) throw new UnauthorizedException('Invalid authorization token');
     const status = await this.userService.verifyUserToken(token);
     if (!status.active) throw new UnauthorizedException('Authorization failed');
+    if (status.type == USER.APP) return true;
     const user = await this.userService.getUserInfo(token);
     request['user'] = user;
     await this.commandBus.execute(
