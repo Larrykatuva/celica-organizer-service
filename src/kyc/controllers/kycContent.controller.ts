@@ -31,7 +31,6 @@ import { KycResponseDto } from '../dtos/kycContent.dtos';
 import { AffiliateService } from '../../organizer/services/affiliate.service';
 
 @ApiTags('KYC')
-@UseGuards(AuthGuard)
 @Controller('content')
 export class KycContentController {
   constructor(

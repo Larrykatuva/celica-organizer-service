@@ -29,7 +29,6 @@ import { ROLE, STAFF_ROLES } from '../roles/role.entity';
 import { AuthGuard } from '../shared/guards/auth.guard';
 
 @ApiTags('COUNTRY')
-@UseGuards(AuthGuard)
 @Controller('country')
 export class CountryController {
   constructor(private countryService: CountryService) {}

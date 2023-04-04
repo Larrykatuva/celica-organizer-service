@@ -1,21 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import { CharField } from '../shared/decorators/dto.decorators';
 
 export class CreateCountryDto {
-  @ApiProperty()
-  @IsNotEmpty()
+  @CharField({ required: true })
   name: string;
 
-  @ApiProperty()
-  @IsNotEmpty()
+  @CharField({ required: true })
   currency: string;
 
-  @ApiProperty()
-  @IsNotEmpty()
+  @CharField({ required: true })
   code: string;
 
-  @ApiProperty()
-  @IsNotEmpty()
+  @CharField({ required: true })
   timezone: string;
 }
 
