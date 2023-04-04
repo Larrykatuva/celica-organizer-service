@@ -35,7 +35,6 @@ import { RoleService } from '../../roles/role.service';
 import { AffiliateService } from '../services/affiliate.service';
 
 @ApiTags('ORGANIZER')
-@UseGuards(AuthGuard)
 @Controller('organizer')
 export class OrganizerController {
   constructor(
@@ -46,6 +45,7 @@ export class OrganizerController {
   ) {}
 
   @Post()
+  @UseGuards(AuthGuard)
   @SharedResponse(OrganizerResponseDto)
   async registerOrganizer(
     @Body() organizer: CreateOrganizerDto,

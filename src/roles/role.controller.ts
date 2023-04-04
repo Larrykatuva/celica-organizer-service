@@ -29,7 +29,6 @@ import { ExtractRequestUser } from '../shared/decorators/user.decorators';
 import { UserInfoResponse } from '../shared/interfaces/shared.interface';
 
 @ApiTags('ROLE')
-@UseGuards(AuthGuard)
 @Controller('role')
 export class RoleController {
   constructor(private roleService: RoleService) {}

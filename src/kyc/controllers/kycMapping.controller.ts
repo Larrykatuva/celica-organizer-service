@@ -29,7 +29,6 @@ import { ROLE } from '../../roles/role.entity';
 import { AuthGuard } from '../../shared/guards/auth.guard';
 
 @ApiTags('KYC')
-@UseGuards(AuthGuard)
 @Controller('mapping')
 export class KycMappingController {
   constructor(private kycMappingService: KycMappingService) {}
@@ -42,6 +41,7 @@ export class KycMappingController {
   }
 
   @Get()
+  @UseGuards(AuthGuard)
   @RequestPaginationDecorator(KycMappingResponseDto)
   async listKycMappings(
     @ExtractRequestPagination() pagination: DefaultPagination,
@@ -53,6 +53,7 @@ export class KycMappingController {
   }
 
   @Get(':country')
+  @UseGuards(AuthGuard)
   @SharedResponse(KycMappingResponseDto, 200)
   async getKycMapping(@Param('country') country: string): Promise<KycMapping> {
     return await this.kycMappingService.filterKycMapping(

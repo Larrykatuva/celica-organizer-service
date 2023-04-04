@@ -33,7 +33,6 @@ import { DefaultPagination } from '../../shared/interfaces/pagination.interface'
 
 @ApiTags('ORGANIZER')
 @Controller('affiliate')
-@UseGuards(AuthGuard)
 export class AffiliateController {
   constructor(
     private affiliateService: AffiliateService,

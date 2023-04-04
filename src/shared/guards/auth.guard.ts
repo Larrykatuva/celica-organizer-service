@@ -22,6 +22,7 @@ export class AuthGuard implements CanActivate {
     private commandBus: CommandBus,
   ) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {
+    console.log('AUTH');
     const request = context.switchToHttp().getRequest<Request>();
     const {
       headers: { authorization },
